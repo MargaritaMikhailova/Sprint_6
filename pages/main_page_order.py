@@ -1,26 +1,23 @@
 import random
 import datetime
+import re
 
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from locators import *
+from pages.base_page import BasePage
 
 
-class OrderPage:
+class OrderPage(BasePage):
 
     def __init__(self, driver):
-        self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
-        self.long_wait = WebDriverWait(driver, 30)
+        super().__init__(driver)
 
     def wait_for_load_page(self):
-        return self.wait.until(EC.visibility_of_element_located(Element_check.MAIN_PAGE))
+        return self.find_element(Element_check.MAIN_PAGE)
 
     def click_button_order(self):
-        button_up = self.wait.until(EC.visibility_of_element_located(Buttons.BUTTON_ORDER_UP))
-        button_up.click()
+        self.click(Buttons.BUTTON_ORDER_UP)
 
     def click_button_in_order(self):
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -29,83 +26,64 @@ class OrderPage:
         button_in.click()
 
     def click_button_order_down(self):
-        button_down = self.long_wait.until(expected_conditions.element_to_be_clickable(Buttons.BUTTON_ORDER_DOWN))
-        self.driver.execute_script("arguments[0].scrollIntoView();", button_down)
-        self.driver.execute_script("arguments[0].click();", button_down)
+        self.click_with_scroll(Buttons.BUTTON_ORDER_DOWN)
 
     def fill_order_first_page(self):
-        name_field = self.wait.until(expected_conditions.element_to_be_clickable(Fill_order.NAME))
-        name_field.send_keys("Тест")
+        name = ("Тест")
+        self.input_text(Fill_order.NAME, name)
 
-        surname_field = self.wait.until(EC.visibility_of_element_located(Fill_order.SURNAME))
-        surname_field.send_keys("Тестовыич")
+        surname = ("Тестовыич")
+        self.input_text(Fill_order.SURNAME, surname)
 
-        user_address = f"Москва{random.randint(3, 999)}"
-        address_field = self.wait.until(EC.visibility_of_element_located(Fill_order.ADDRESS))
-        address_field.send_keys(user_address)
+        address = f"Москва{random.randint(3, 999)}"
+        self.input_text(Fill_order.ADDRESS, address)
 
-        user_subway = self.wait.until(EC.element_to_be_clickable(Fill_order.SUBWAY))
-        user_subway.click()
-        subway_button = self.wait.until(EC.element_to_be_clickable(Buttons.BUTTON_SUBWAY))
-        subway_button.click()
+        self.click(Fill_order.SUBWAY)
+        self.click(Buttons.BUTTON_SUBWAY)
 
         user_number = f"+79{random.randint(100000000, 999999999)}"
-        number_field = self.wait.until(EC.visibility_of_element_located(Fill_order.NUMBER))
-        number_field.send_keys(user_number)
+        self.input_text(Fill_order.NUMBER, user_number)
 
     def click_button_next(self):
-        button_up = self.wait.until(EC.visibility_of_element_located(Buttons.NEXT_BUTTON))
-        button_up.click()
+        self.click(Buttons.NEXT_BUTTON)
 
     def fill_order_second_page(self):
-
-        date_field = self.wait.until(EC.visibility_of_element_located(Fill_order.DATE))
+        date_field = self.find_element(Fill_order.DATE)
         tomorrow = datetime.date.today() + datetime.timedelta(days=1)
         formatted_date = tomorrow.strftime("%d.%m.%Y")
         date_field.send_keys(formatted_date)
         date_field.send_keys(Keys.ENTER)
 
-        user_rent = self.wait.until(EC.element_to_be_clickable(Fill_order.LONG_PERIOD))
-        user_rent.click()
-        type_rent = self.wait.until(EC.element_to_be_clickable(Fill_order.TYPE_RENT))
-        type_rent.click()
+        self.click(Fill_order.LONG_PERIOD)
+        self.click(Fill_order.TYPE_RENT)
 
-        type_color = self.wait.until(EC.element_to_be_clickable(Fill_order.TYPE_COLOR))
-        self.driver.execute_script("arguments[0].scrollIntoView();", type_color)
-        type_color.click()
+        self.click_with_scroll(Fill_order.TYPE_COLOR)
 
-        user_comment = self.wait.until(EC.visibility_of_element_located(Fill_order.COMMENT))
-        user_comment.send_keys("Автотест")
+        user_comment = ("Автотест")
+        self.input_text(Fill_order.COMMENT, user_comment)
 
     def pre_req_order(self):
-        return self.wait.until(EC.visibility_of_element_located(Element_check.PRE_REQ_ORDER))
+        return self.is_element_visible(Element_check.PRE_REQ_ORDER)
 
     def click_yes_order(self):
-        button_yes_order = self.wait.until(EC.visibility_of_element_located(Buttons.YES_BUTTON))
-        button_yes_order.click()
+        self.click(Buttons.YES_BUTTON)
 
     def click_no_order(self):
-        button_no_order = self.wait.until(EC.visibility_of_element_located(Buttons.NO_BUTTON))
-        button_no_order.click()
+        self.click(Buttons.NO_BUTTON)
 
     def click_check_status(self):
-        button_up = self.wait.until(EC.visibility_of_element_located(Buttons.BUTTON_STATUS))
-        button_up.click()
+        self.click(Buttons.BUTTON_STATUS)
 
     def check_second_page_form(self):
-        return self.wait.until(EC.visibility_of_element_located(Element_check.SECOND_PAGE_FORM))
+        return self.find_element(Element_check.SECOND_PAGE_FORM)
 
-    def check_logotype_samokat(self, wait_for_load_page):
-        logotype_samokat = self.wait.until(EC.element_to_be_clickable(Buttons.BUTTON_LOGOTYPE))
-        logotype_samokat.click()
-        return wait_for_load_page
+    def get_order_number(self):
+        order_element = self.find_element(Element_check.SUCCESS_ORDER)
 
-    def click_logotype_yandex(self):
-        logotype_yandex = self.wait.until(EC.element_to_be_clickable(Buttons.BUTTON_YANDEX))
-        logotype_yandex.click()
-        self.wait.until(EC.number_of_windows_to_be(2))
-        self.driver.switch_to.window(self.driver.window_handles[-1])
-        return self.wait.until(EC.url_contains("https://dzen.ru/"))
+        text = order_element.text
+        match = re.search(r'(\d{5,6})', text)
+        return match.group(1) if match else "Номер не найден"
+
 
 
 
