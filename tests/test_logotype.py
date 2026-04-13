@@ -39,7 +39,6 @@ class TestLogo:
 
         logotype_page.wait_for_load_page()
         logotype_page.click_button_order_down()
-        #logotype_page.click_logotype_yandex()
 
         logotype_samokat = logotype_page.click_logotype_yandex()
         assert logotype_samokat is True

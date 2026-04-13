@@ -13,18 +13,15 @@ class MainPage(BasePage):
         return self.find_element(Element_check.MAIN_PAGE)
 
     def scroll_to_questions_block(self):
-        block_item = self.find_element(Element_check.BLOCK_QUESTION)
-        self.driver.execute_script("arguments[0].scrollIntoView();", block_item)
-        return block_item
+        self.scroll_to_element(Element_check.BLOCK_QUESTION)
 
     def get_question_element(self, question_text):
         locator = Element_check.check_question(question_text)
         return self.find_element(locator)
 
     def click_question(self, question_text):
-        question_element = self.get_question_element(question_text)
-        self.driver.execute_script("arguments[0].click();", question_element)
-        return question_element
+        locator = Element_check.check_question(question_text)
+        self.click_to_element(locator)
 
     def get_answer_element(self, answer_text):
         locator = Element_check.check_answer(answer_text)

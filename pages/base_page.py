@@ -47,3 +47,8 @@ class BasePage:
     def switch_to_new_window(self):
         self.long_wait.until(EC.number_of_windows_to_be(2))
         self.driver.switch_to.window(self.driver.window_handles[-1])
+
+    def click_to_element(self, locator):
+        element = self.find_element(locator)
+        self.driver.execute_script("arguments[0].click();", element)
+        return element
