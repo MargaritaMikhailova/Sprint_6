@@ -2,10 +2,7 @@ import time
 import pytest
 import allure
 import re
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
-from locators import Element_check
 from pages.main_page_order import OrderPage
 
 
@@ -30,23 +27,12 @@ class TestPageOrder:
 
         time.sleep(1)
 
-        order_number = self.get_order_number(driver)
+        order_number = order_page.get_order_number()
 
         print(f"Номер заказа: {order_number}")
 
         allure.attach(str(order_number), "Номер заказа", allure.attachment_type.TEXT)
 
-    def get_order_number(self, driver):
-        long_wait = WebDriverWait(driver, 60)
-        order_element = long_wait.until(EC.visibility_of_element_located(Element_check.SUCCESS_ORDER))
-
-        text = order_element.text
-        match = re.search(r'(\d{5,6})', text)
-
-        if match:
-            return match.group(1)
-        else:
-            return "Номер не найден"
 
     @allure.title('Проверка создания заявки на аренду самоката через нижнюю кнопку "Заказать"')
     @allure.description('Созадние заказа через нижнюю кнопку "Заказать", и отмена создания заказа')

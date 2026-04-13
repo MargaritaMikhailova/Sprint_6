@@ -14,14 +14,10 @@ class TestPageQuestion:
         main_page = MainPage(driver)
         main_page.wait_for_load_page()
         main_page.scroll_to_questions_block()
+        main_page.click_question(question)
 
-
-    def check_answer_visibility_and_text(self, question_text, expected_answer):
-        self.click_question(question_text)
-        answer_element = self.get_answer_element(expected_answer)
-
-        assert answer_element.is_displayed()
-        assert expected_answer in answer_element.text
+        answer_text = main_page.get_answer_text(answer)
+        assert answer in answer_text
 
 
     @allure.title('Проверка, что вопросы есть на главной странице')
@@ -32,12 +28,11 @@ class TestPageQuestion:
         main_page.wait_for_load_page()
         main_page.scroll_to_questions_block()
 
+        assert main_page.is_question_visible(question)
+        question_text = main_page.get_question_text(question)
+        assert question in question_text
 
-    def check_question_visibility_and_text(self, question_text):
-        question_element = self.get_question_element(question_text)
 
-        assert question_element.is_displayed()
-        assert question_text in question_element.text
 
 
 
