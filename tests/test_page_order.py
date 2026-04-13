@@ -4,17 +4,19 @@ import allure
 import re
 
 from pages.main_page_order import OrderPage
+from data import ButtonData
 
 
 class TestPageOrder:
 
     @allure.title('Проверка создания заявки на аренду самоката через верхнюю кнопку "Заказать"')
     @allure.description('Созадние заказа через верхнюю кнопку "Заказать"')
-    def test_page(self, driver):
+    @pytest.mark.parametrize("button_method, button_name", ButtonData.BUTTON_PARAMS)
+    def test_page(self, driver, button_method, button_name):
         order_page = OrderPage(driver)
 
         order_page.wait_for_load_page()
-        order_page.click_button_order()
+        getattr(order_page, button_method)()
         order_page.fill_order_first_page()
         order_page.click_button_next()
         order_page.fill_order_second_page()
@@ -36,11 +38,12 @@ class TestPageOrder:
 
     @allure.title('Проверка создания заявки на аренду самоката через нижнюю кнопку "Заказать"')
     @allure.description('Созадние заказа через нижнюю кнопку "Заказать", и отмена создания заказа')
-    def test_page_order(self, driver):
+    @pytest.mark.parametrize("button_method, button_name", ButtonData.BUTTON_PARAMS)
+    def test_page_order(self, driver, button_method, button_name):
         order_page = OrderPage(driver)
 
         order_page.wait_for_load_page()
-        order_page.click_button_order_down()
+        getattr(order_page, button_method)()
         order_page.fill_order_first_page()
         order_page.click_button_next()
         order_page.fill_order_second_page()

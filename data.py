@@ -29,4 +29,8 @@ class Data:
      "Да, обязательно. Всем самокатов! И Москве, и Московской области.")
 ]
 
-
+class ButtonData:
+    BUTTON_PARAMS = [
+        ("click_button_order", "верхнюю"),
+        ("click_button_order_down", "нижнюю")
+    ]

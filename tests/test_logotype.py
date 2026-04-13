@@ -2,16 +2,18 @@ import pytest
 import allure
 
 from pages.main_page_logotype import LogotypePage
+from data import ButtonData
 
 class TestLogo:
 
     @allure.title('Проверить логотип "Самокат"')
     @allure.description('Проверить: если нажать на логотип «Самоката», попадёшь на главную страницу «Самоката». после заполение первой части')
-    def test_logotype_check_one(self, driver):
+    @pytest.mark.parametrize("button_method, button_name", ButtonData.BUTTON_PARAMS)
+    def test_logotype_check_one(self, driver, button_method, button_name):
         logotype_page = LogotypePage(driver)
 
         logotype_page.wait_for_load_page()
-        logotype_page.click_button_order()
+        getattr(logotype_page, button_method)()
         logotype_page.fill_order_first_page()
 
         logotype_samokat = logotype_page.check_logotype_samokat()
@@ -19,11 +21,12 @@ class TestLogo:
 
     @allure.title('Проверить логотип "Самокат"')
     @allure.description('Проверить: если нажать на логотип «Самоката», попадёшь на главную страницу «Самоката». после заполнение второй  части')
-    def test_logotype_check_two(self, driver):
+    @pytest.mark.parametrize("button_method, button_name", ButtonData.BUTTON_PARAMS)
+    def test_logotype_check_two(self, driver, button_method, button_name):
         logotype_page = LogotypePage(driver)
 
         logotype_page.wait_for_load_page()
-        logotype_page.click_button_order_down()
+        getattr(logotype_page, button_method)()
         logotype_page.fill_order_first_page()
         logotype_page.click_button_next()
         logotype_page.fill_order_second_page()
